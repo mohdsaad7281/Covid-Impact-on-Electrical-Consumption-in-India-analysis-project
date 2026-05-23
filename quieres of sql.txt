@@ -1,0 +1,58 @@
+total consumption per state
+SELECT state,
+       ROUND(SUM(consumption), 2) AS total_consumption
+FROM electrical_data
+GROUP BY state
+ORDER BY total_consumption DESC;
+
+major consuming state
+SELECT state,
+       ROUND(SUM(consumption), 2) AS total_consumption
+FROM electrical_data
+GROUP BY state
+ORDER BY total_consumption DESC
+LIMIT 5;
+
+minimum consumtion state
+SELECT state,
+       ROUND(SUM(consumption), 2) AS total_consumption
+FROM electrical_data
+GROUP BY state
+ORDER BY total_consumption ASC
+LIMIT 5;
+
+monthly consumtion 
+SELECT DATE_FORMAT(date, '%Y-%m') AS month,
+       ROUND(SUM(consumption), 2) AS total_consumption
+FROM electrical_data
+GROUP BY month
+ORDER BY month;
+
+
+yearly comparison
+SELECT YEAR(date) AS year,
+       ROUND(SUM(consumption), 2) AS total_consumption
+FROM electrical_data
+GROUP BY year;
+
+covid impact 
+SELECT YEAR(date) AS year,
+       MONTH(date) AS month,
+       ROUND(SUM(consumption), 2) AS total_consumption
+FROM electrical_data
+WHERE MONTH(date) IN (4, 5, 6)
+GROUP BY year, month
+ORDER BY year, month;
+
+
+statewise impact
+SELECT state,
+       ROUND(SUM(CASE WHEN YEAR(date) = 2019 
+             AND MONTH(date) IN (4,5,6) 
+             THEN consumption END), 2) AS consumption_2019,
+       ROUND(SUM(CASE WHEN YEAR(date) = 2020 
+             AND MONTH(date) IN (4,5,6) 
+             THEN consumption END), 2) AS consumption_2020
+FROM electrical_data
+GROUP BY state
+ORDER BY consumption_2019 DESC;
